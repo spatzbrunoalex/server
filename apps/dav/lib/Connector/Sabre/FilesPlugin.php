@@ -343,7 +343,7 @@ class FilesPlugin extends ServerPlugin {
 				if (!$owner) {
 					return null;
 				} else {
-					return $owner->getDisplayName();
+					return $this->getUserDisplayName($owner);
 				}
 			});
 
@@ -597,5 +597,36 @@ class FilesPlugin extends ServerPlugin {
 				$this->server->httpResponse->setHeader('OC-FileId', $fileId);
 			}
 		}
+	}
+
+	/**
+	 * returns displayName based on IUser:
+	 * - if user exists locally, get user display name
+	 * - if federatedfilesharing is not available, returns set display name
+	 * - else get display name from LUS (globalscale)
+	 *
+	 * @param IUser $owner
+	 *
+	 * @return string
+	 */
+	private function getUserDisplayName(IUser $owner): string {
+		try {
+			$userManager = \OCP\Server::get(IUserManager::class);
+			$user = $userManager->get($owner->getUID());
+			if ($user !== null) {
+				return $user->getDisplayName();
+			}
+
+			$appManager = \OCP\Server::get(IAppManager::class);
+			if (!$appManager->isInstalled('federatedfilesharing')) {
+				return $owner->getDisplayName();
+			}
+
+			$cloudFederatedProviderFiles = \OCP\Server::get(CloudFederationProviderFiles::class);
+		} catch (ContainerExceptionInterface $e) {
+			return $owner->getDisplayName();
+		}
+
+		return $cloudFederatedProviderFiles->getUserDisplayName($owner->getDisplayName());
 	}
 }
