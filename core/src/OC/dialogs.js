@@ -566,7 +566,7 @@ const Dialogs = {
 				// from the page, it is probably not needed ;)
 				self.filepicker.loading = false
 				if (status !== 0) {
-					alert(t('core', 'Error loading file picker template: {error}', { error: error }))
+					// alert(t('core', 'Error loading file picker template: {error}', { error: error }))
 				}
 			})
 	},

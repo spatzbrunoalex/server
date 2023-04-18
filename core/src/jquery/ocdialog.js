@@ -24,6 +24,7 @@
  */
 
 import $ from 'jquery'
+import { createFocusTrap } from 'focus-trap'
 import { isA11yActivation } from '../Util/a11y.js'
 
 $.widget('oc.ocdialog', {
@@ -36,7 +37,10 @@ $.widget('oc.ocdialog', {
 		modal: false,
 	},
 	_create() {
+		console.log('create')
 		const self = this
+
+		this.currentFocusTrap = null
 
 		this.originalCss = {
 			display: this.element[0].style.display,
@@ -54,6 +58,7 @@ $.widget('oc.ocdialog', {
 				role: 'dialog',
 			})
 			.insertBefore(this.element)
+		this._useFocusTrap()
 		this.$dialog.append(this.element.detach())
 		this.element.removeAttr('title').addClass('oc-dialog-content').appendTo(this.$dialog)
 
@@ -116,7 +121,7 @@ $.widget('oc.ocdialog', {
 		this._createOverlay()
 	},
 	_init() {
-		this.$dialog.focus()
+		// this.$dialog.focus()
 		this._trigger('open')
 	},
 	_setOption(key, value) {
@@ -252,6 +257,24 @@ $.widget('oc.ocdialog', {
 			this.overlay = null
 		}
 	},
+	_useFocusTrap() {
+		// Create global focus trap stack if undefined
+		Object.assign(window, { _nc_focus_trap: window._nc_focus_trap || [] })
+
+		this.currentFocusTrap = createFocusTrap(this.$dialog[0], {
+			allowOutsideClick: true,
+			trapStack: window._nc_focus_trap,
+			// onDeactivate: () => {},
+			// setReturnFocus: initialElement,
+			// fallbackFocus: initialElement,
+		})
+
+		this.currentFocusTrap.activate()
+	},
+	_clearFocusTrap() {
+		this.currentFocusTrap?.deactivate()
+		this.currentFocusTrap = null
+	},
 	widget() {
 		return this.$dialog
 	},
@@ -262,6 +285,7 @@ $.widget('oc.ocdialog', {
 		this.enterCallback = null
 	},
 	close() {
+		this._clearFocusTrap()
 		this._destroyOverlay()
 		const self = this
 		// Ugly hack to catch remaining keyup events.
