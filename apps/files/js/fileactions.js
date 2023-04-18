@@ -682,7 +682,7 @@
 				},
 				mime: 'all',
 				order: -25,
-				permissions: $('#isPublic').val() ? OC.PERMISSION_UPDATE : OC.PERMISSION_READ,
+				permissions: OC.PERMISSION_UPDATE,
 				iconClass: 'icon-external',
 				actionHandler: function (filename, context) {
 					var permissions = context.fileInfoModel.attributes.permissions;
