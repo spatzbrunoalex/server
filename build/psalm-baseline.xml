@@ -1060,12 +1060,6 @@
       <code>$this-&gt;request-&gt;server</code>
     </NoInterfaceProperties>
   </file>
-  <file src="apps/oauth2/lib/Db/AccessTokenMapper.php">
-    <InvalidCatch occurrences="1"/>
-  </file>
-  <file src="apps/oauth2/lib/Db/ClientMapper.php">
-    <InvalidCatch occurrences="2"/>
-  </file>
   <file src="apps/provisioning_api/lib/Controller/UsersController.php">
     <TypeDoesNotContainNull occurrences="2">
       <code>$groupid === null</code>
@@ -1727,9 +1721,6 @@
     <InvalidArrayAccess occurrences="1">
       <code>$provider['provider_id']</code>
     </InvalidArrayAccess>
-  </file>
-  <file src="lib/private/Authentication/WebAuthn/CredentialRepository.php">
-    <InvalidCatch occurrences="2"/>
   </file>
   <file src="lib/private/BackgroundJob/QueuedJob.php">
     <MoreSpecificImplementedParamType occurrences="1">
